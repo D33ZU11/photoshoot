@@ -32,6 +32,27 @@
             height: 100%;
             padding: 20px 15px;
             box-sizing: border-box;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* The Mysterious Flashlight Overlay */
+        .flashlight-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none; /* Crucial: allows tapping "through" the darkness to buttons/images */
+            z-index: 5; /* Sits directly over the content */
+            /* Creates a dark mask with a beautifully soft, warm golden spotlight hole */
+            background: radial-gradient(
+                circle 110px at var(--x, 50%) var(--y, 50%), 
+                rgba(229, 193, 88, 0.08) 0%, 
+                rgba(8, 8, 8, 0.2) 50%, 
+                rgba(8, 8, 8, 0.98) 95%
+            );
+            will-change: background; /* Optimizes mobile performance */
         }
 
         /* Compact, elegant header */
@@ -40,6 +61,7 @@
             margin-bottom: 10px;
             text-align: center;
             flex-shrink: 0;
+            z-index: 10; /* Keeps text slightly readable even in shadows */
         }
 
         h1 {
@@ -73,6 +95,7 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
+            z-index: 10;
         }
 
         .teaser-quote {
@@ -95,10 +118,10 @@
             max-width: 450px;
             flex-grow: 1; 
             margin: 10px 0;
-            min-height: 0; /* Crucial for nested flexbox scaling */
+            min-height: 0; 
         }
 
-        /* The Wrapper: Acts as a clean container but DOES NOT force a background crop */
+        /* Wrapper that flex-centers the actual image shape */
         .gallery-item-wrapper {
             position: relative;
             overflow: hidden;
@@ -109,13 +132,13 @@
             justify-content: center;
         }
 
-        /* The actual image now scales flawlessly within its grid area with NO cropping */
+        /* Standardized border and shadow wraps the natural image edge */
         .gallery-item {
             max-width: 100%;
             max-height: 100%;
-            object-fit: contain; /* Keeps 100% of the image visible */
+            object-fit: contain; 
             border-radius: 6px;
-            border: 1px solid rgba(229, 193, 88, 0.25); /* Elegant gold border follows the photo shape */
+            border: 1px solid rgba(229, 193, 88, 0.25); 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
             filter: brightness(0.95) contrast(1.02);
             display: block;
@@ -123,9 +146,9 @@
 
         /* Seductive, low-profile button at the very bottom */
         .load-btn {
-            background: transparent;
+            background: #080808;
             color: #e5c158;
-            border: 1px solid rgba(229, 193, 88, 0.4);
+            border: 1px solid rgba(229, 193, 88, 0.5);
             padding: 14px 0;
             width: 100%;
             max-width: 280px;
@@ -139,8 +162,9 @@
             margin-top: 10px;
             margin-bottom: 5px;
             flex-shrink: 0;
+            z-index: 10; /* Ensures button stays easily tappable */
             transition: all 0.3s ease;
-            -webkit-tap-highlight-color: transparent; /* Removes iOS touch flash */
+            -webkit-tap-highlight-color: transparent; 
         }
 
         .load-btn:active {
@@ -163,6 +187,9 @@
 </head>
 <body>
 
+    <!-- The physical flashlight layer that wanders the screen -->
+    <div class="flashlight-overlay" id="flashlight"></div>
+
     <div class="app-container">
         
         <header>
@@ -170,12 +197,12 @@
             <p class="subtitle">Strictly Confidential</p>
         </header>
 
-        <!-- 1. The Welcome Screen (Displays first instead of images) -->
+        <!-- 1. The Welcome Screen -->
         <div id="welcomeScreen" class="welcome-screen fade-in">
             <p class="teaser-quote">"I had a little private photoshoot just for you...<br>Care to see what's hidden inside?"</p>
         </div>
 
-        <!-- 2. The Photo Grid (Starts hidden) -->
+        <!-- 2. The Photo Grid -->
         <div id="gallery" class="gallery-grid"></div>
 
         <!-- 3. The Control Button -->
@@ -197,26 +224,56 @@
         const welcomeScreen = document.getElementById('welcomeScreen');
         const galleryContainer = document.getElementById('gallery');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const flashlight = document.getElementById('flashlight');
         
         let hasUnlocked = false;
 
-        // Function to select and display 6 completely random images
+        // --- SMOOTH WANDERING FLASHLIGHT SCRIPT ---
+        let currentX = window.innerWidth / 2;
+        let currentY = window.innerHeight / 2;
+        let targetX = currentX;
+        let targetY = currentY;
+
+        // Randomly pick a new target coordinate on the screen
+        function getNewTarget() {
+            // Keep the target slightly away from the absolute edges for better visibility
+            targetX = Math.random() * (window.innerWidth - 160) + 80;
+            targetY = Math.random() * (window.innerHeight - 200) + 100;
+            
+            // Pick a new spot every 1.5 to 3 seconds dynamically
+            setTimeout(getNewTarget, Math.random() * 1500 + 1500);
+        }
+
+        // Beautiful, continuous frame-by-frame drag/glide animation
+        function animateFlashlight() {
+            // LERP: Move 3% of the remaining distance to target every frame (gives a heavy, cinematic drift)
+            currentX += (targetX - currentX) * 0.03;
+            currentY += (targetY - currentY) * 0.03;
+
+            flashlight.style.setProperty('--x', `${currentX}px`);
+            flashlight.style.setProperty('--y', `${currentY}px`);
+
+            requestAnimationFrame(animateFlashlight);
+        }
+
+        // Initialize flashlight movement
+        getNewTarget();
+        animateFlashlight();
+
+
+        // --- GALLERY CONTENT GENERATOR ---
         function showRandomImages() {
-            // Force viewport to the top of the screen
             window.scrollTo({ top: 0, behavior: 'instant' });
 
-            // If this is the first click, swap the welcome screen for the gallery grid
             if (!hasUnlocked) {
                 welcomeScreen.style.display = 'none';
                 galleryContainer.style.display = 'grid';
-                loadMoreBtn.innerText = "Unveil 6 More"; // Change the button text for subsequent clicks
+                loadMoreBtn.innerText = "Unveil 6 More";
                 hasUnlocked = true;
             }
 
-            // Clear the grid
             galleryContainer.innerHTML = '';
 
-            // Clone and shuffle
             const shuffled = [...allImages].sort(() => 0.5 - Math.random());
             const selection = shuffled.slice(0, imagesToShow);
 
@@ -229,7 +286,6 @@
                 img.alt = "Private Gallery Image";
                 img.className = "gallery-item";
                 
-                // If a photo path fails, hide that grid cell automatically
                 img.onerror = function() {
                     wrapper.style.display = 'none';
                 };
