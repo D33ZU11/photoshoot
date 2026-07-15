@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        /* Responsive grid layout for the images */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .gallery-item {
+            width: 100%;
+            height: 200px;
+            object-fit: cover; /* Keeps image proportions clean without stretching */
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #ddd; /* Placeholder background while loading */
+        }
+
+        /* Button styling */
+        .load-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .load-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .load-btn:hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>My Image Gallery</h1>
+
+    <!-- The container where JavaScript will inject the images -->
+    <div id="gallery" class="gallery-grid"></div>
+
+    <!-- The trigger button -->
+    <button id="loadMoreBtn" class="load-btn">Load Next 5 Images</button>
+
+    <script>
+        // 1. LIST YOUR IMAGES HERE
+        // Replace these placeholder names with your actual filenames inside your "images" folder.
+        // Make sure the file extensions (.jpg, .png, etc.) exactly match the real files.
+        const allImages = [
+            "images/photo1.jpg",
+            "images/photo2.jpg",
+            "images/photo3.jpg",
+            "images/photo4.jpg",
+            "images/photo5.jpg",
+            "images/photo6.jpg",
+            "images/photo7.jpg",
+            "images/photo8.jpg",
+            "images/photo9.jpg",
+            "images/photo10.jpg"
+        ];
+
+        let currentIndex = 0;
+        const imagesPerPage = 5;
+
+        const galleryContainer = document.getElementById('gallery');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+        // Function to load and display the next batch of images
+        function loadImages() {
+            // Determine the stopping point for this batch
+            const nextIndex = currentIndex + imagesPerPage;
+            const batch = allImages.slice(currentIndex, nextIndex);
+
+            // Loop through the batch and append them to the gallery container
+            batch.forEach(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = "Gallery Image";
+                img.className = "gallery-item";
+                galleryContainer.appendChild(img);
+            });
+
+            // Update our current tracking index
+            currentIndex = nextIndex;
+
+            // If we have reached or exceeded the total number of images, hide the button
+            if (currentIndex >= allImages.length) {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+
+        // Event listener for the button click
+        loadMoreBtn.addEventListener('click', loadImages);
+
+        // Load the initial first batch of 5 images automatically on page load
+        loadImages();
+    </script>
+
+</body>
+</html>
