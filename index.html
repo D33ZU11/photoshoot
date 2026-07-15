@@ -16,20 +16,6 @@
             color: #e0e0e0;
         }
 
-        h1 {
-            color: #ffffff;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
-        }
-
-        p.subtitle {
-            color: #888;
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-        }
-
         /* Responsive grid layout with masonry-like feel */
         .gallery-grid {
             display: grid;
@@ -111,19 +97,13 @@
 </head>
 <body>
 
-    <h1>My Portfolio</h1>
-    <p class="subtitle">A curated collection of recent shots</p>
-
     <!-- The container where JavaScript will inject the images -->
     <div id="gallery" class="gallery-grid"></div>
 
-    <!-- The trigger button (Now re-labeled to fit its new job!) -->
+    <!-- The trigger button (still in the exact same place at the bottom) -->
     <button id="loadMoreBtn" class="load-btn">Show 5 New Random Images</button>
 
     <script>
-        // 1. ADDED ALL YOUR IMAGES HERE
-        // I have pre-filled this up to image30.jpg. 
-        // If you upload more images, just add them to this list following the exact same pattern!
         const allImages = [
             "images/image1.jpg", "images/image2.jpg", "images/image3.jpg", "images/image4.jpg", "images/image5.jpg",
             "images/image6.jpg", "images/image7.jpg", "images/image8.jpg", "images/image9.jpg", "images/image10.jpg",
@@ -139,16 +119,16 @@
 
         // Function to select and display 5 completely random images
         function showRandomImages() {
-            // 1. Clear out the previous images from the screen
+            // Clear out the previous images from the screen
             galleryContainer.innerHTML = '';
 
-            // 2. Clone and shuffle the entire image array so we don't mess up the original list
+            // Clone and shuffle the entire image array
             const shuffled = [...allImages].sort(() => 0.5 - Math.random());
 
-            // 3. Take the first 5 images from the shuffled deck
+            // Take the first 5 images from the shuffled deck
             const selection = shuffled.slice(0, imagesToShow);
 
-            // 4. Create and show them on the screen
+            // Create and show them on the screen
             selection.forEach(src => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'gallery-item-wrapper fade-in';
