@@ -3,309 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velvet Vault · private showcase</title>
-    <!-- refined serif + sans blend -->
+    <title>The Private Collection</title>
+    <!-- Elegant, high-fashion editorial fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Sleek, dark studio gallery atmosphere */
         body {
             font-family: 'Montserrat', sans-serif;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 24px 80px;
+            padding: 60px 20px;
             text-align: center;
-            background: radial-gradient(circle at 50% 20%, #1f0d13 0%, #0a0508 70%, #030103 100%);
-            color: #ece6e6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
+            background: #080808;
+            color: #f5f5f7;
+            overflow-x: hidden;
         }
 
-        /* ----- luxury header with whisper glow ----- */
-        .vault-header {
-            margin-bottom: 30px;
-            position: relative;
-            display: inline-block;
-        }
-
+        /* Minimal, elegant luxury header */
         h1 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-weight: 400;
-            font-size: 3.8rem;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            color: #e5c158; /* Soft Champagne Gold */
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 5px;
             letter-spacing: 6px;
             text-transform: uppercase;
-            color: #d9c38a;
-            text-shadow: 0 0 30px rgba(212, 175, 55, 0.25), 0 4px 20px rgba(0,0,0,0.7);
-            margin: 0;
-            line-height: 1.1;
         }
 
-        .sub-glow {
-            font-family: 'Playfair Display', Georgia, serif;
+        p.subtitle {
+            font-family: 'Cormorant Garamond', Georgia, serif;
             font-style: italic;
-            color: #bea77a;
-            font-size: 1.1rem;
-            letter-spacing: 3px;
-            margin-top: 6px;
-            opacity: 0.7;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
-            padding-top: 10px;
-            display: inline-block;
+            color: #a69f88;
+            font-size: 1.4rem;
+            margin-bottom: 60px;
+            letter-spacing: 2px;
         }
 
-        /* ----- cinematic grid ----- */
+        /* Clean, sharp grid for 8 landscape/portrait balanced frames */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 28px;
-            width: 100%;
-            margin: 30px 0 50px;
+            gap: 24px;
+            margin-bottom: 60px;
             justify-content: center;
         }
 
-        /* premium card – dark mirror + gold whisper */
+        /* Fine-art luxury framing */
         .gallery-item-wrapper {
             position: relative;
             overflow: hidden;
-            border-radius: 20px 8px 20px 8px;
-            background: #0e080b;
-            aspect-ratio: 4 / 5;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(212, 175, 55, 0.1);
-            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), 
-                        box-shadow 0.6s ease,
-                        border-color 0.4s;
-            border: 1px solid rgba(212, 175, 55, 0.08);
-            cursor: default;
+            border-radius: 4px; /* Sleeker, sharper corners for an editorial look */
+            background-color: #121212;
+            aspect-ratio: 3 / 4; /* Classic portrait photo-frame ratio */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(229, 193, 88, 0.15); /* Delicate gold border */
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
+                        box-shadow 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                        border-color 0.6s ease;
+            cursor: pointer;
         }
 
+        /* Elegant lift and glow on hover */
         .gallery-item-wrapper:hover {
-            transform: translateY(-12px) scale(1.01);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 35px rgba(212, 175, 55, 0.15);
-            border-color: rgba(212, 175, 55, 0.35);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(229, 193, 88, 0.1);
+            border-color: rgba(229, 193, 88, 0.6);
         }
 
         .gallery-item {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+            filter: brightness(0.9) contrast(1.05); /* Gives a premium, dramatic contrast */
+            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), 
+                        filter 0.6s ease;
             display: block;
-            filter: saturate(1.05) contrast(1.02);
         }
 
+        /* Slow, cinematic reveal on hover */
         .gallery-item-wrapper:hover .gallery-item {
-            transform: scale(1.12) rotate(0.5deg);
+            transform: scale(1.06);
+            filter: brightness(1.05) contrast(1.05); /* Gently lights up the photo when she looks closer */
         }
 
-        /* ---- overlay: smoky veil + gold text ---- */
-        .card-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 45%;
-            background: linear-gradient(to top, rgba(8, 3, 5, 0.92) 20%, rgba(8, 3, 5, 0) 100%);
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding-bottom: 28px;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            pointer-events: none;
-        }
-
-        .gallery-item-wrapper:hover .card-overlay {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .overlay-text {
-            font-family: 'Playfair Display', Georgia, serif;
-            color: #dcc490;
-            font-size: 1rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            font-weight: 600;
-            text-shadow: 0 2px 12px rgba(0,0,0,0.7);
-            background: rgba(10, 5, 8, 0.4);
-            padding: 6px 22px;
-            border-radius: 40px;
-            backdrop-filter: blur(3px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-        }
-
-        /* ----- seductive pulse button (with extra wow) ----- */
+        /* Sleek, understated luxury button */
         .load-btn {
             background: transparent;
-            color: #d9c38a;
-            border: 2px solid #d9c38a;
-            padding: 20px 56px;
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 1.2rem;
-            font-weight: 500;
-            letter-spacing: 5px;
+            color: #e5c158;
+            border: 1px solid rgba(229, 193, 88, 0.4);
+            padding: 16px 45px;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            border-radius: 60px;
+            border-radius: 2px; /* Sharp, modern edge */
             cursor: pointer;
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            animation: buttonPulse 3.2s infinite ease-in-out;
-            background: rgba(10, 5, 8, 0.3);
-            backdrop-filter: blur(2px);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.05);
-            margin-top: 10px;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        @keyframes buttonPulse {
-            0% { box-shadow: 0 0 8px rgba(212, 175, 55, 0.1), inset 0 0 0px rgba(212, 175, 55, 0); }
-            50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.35), inset 0 0 8px rgba(212, 175, 55, 0.15); border-color: #e8d29a; }
-            100% { box-shadow: 0 0 8px rgba(212, 175, 55, 0.1), inset 0 0 0px rgba(212, 175, 55, 0); }
-        }
-
+        /* Clean, dramatic inverted hover effect */
         .load-btn:hover {
-            animation: none;
-            background: #d9c38a;
-            color: #0a0508;
-            box-shadow: 0 0 60px rgba(212, 175, 55, 0.5), inset 0 0 20px rgba(255, 215, 120, 0.3);
-            transform: translateY(-4px) scale(1.03);
-            border-color: #f5e2b0;
+            background-color: #e5c158;
+            color: #080808;
+            border-color: #e5c158;
+            box-shadow: 0 10px 25px rgba(229, 193, 88, 0.2);
+            transform: translateY(-2px);
         }
 
         .load-btn:active {
-            transform: translateY(2px) scale(0.96);
+            transform: translateY(1px);
         }
 
-        /* small elegance: secret counter (mysterious) */
-        .secret-tag {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 300;
-            letter-spacing: 2px;
-            color: #7a6a50;
-            margin-top: 30px;
-            font-size: 0.8rem;
-            border-top: 1px solid rgba(212, 175, 55, 0.08);
-            padding-top: 25px;
-            width: 60%;
-            max-width: 300px;
-            opacity: 0.5;
-        }
-
-        /* fade-in cascade */
-        @keyframes fadeSlide {
-            0% { opacity: 0; transform: translateY(30px) scale(0.97); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+        /* Elegant cascade fade-in */
+        @keyframes editorialFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .fade-in {
-            animation: fadeSlide 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-
-        /* responsive finesse */
-        @media (max-width: 600px) {
-            h1 { font-size: 2.6rem; letter-spacing: 4px; }
-            .gallery-grid { gap: 18px; }
-            .load-btn { padding: 16px 32px; font-size: 1rem; }
+            animation: editorialFade 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
     </style>
 </head>
 <body>
 
-    <div class="vault-header">
-        <h1>✦ Velvet Vault ✦</h1>
-        <span class="sub-glow">a private reverie · for your eyes only</span>
-    </div>
+    <h1>The Private Collection</h1>
+    <p class="subtitle">Strictly Confidential • For Your Eyes Only</p>
 
+    <!-- The container where JavaScript will inject the images -->
     <div id="gallery" class="gallery-grid"></div>
 
-    <button id="loadMoreBtn" class="load-btn">Unlock · Reveal</button>
-    <div class="secret-tag">—  confidential —</div>
+    <!-- The minimalist, high-end button -->
+    <button id="loadMoreBtn" class="load-btn">Reveal Next Set</button>
 
     <script>
-        (function() {
-            // ----- 30 images (placeholder names) -----
-            const imageBase = [
-                "images/image1.jpg", "images/image2.jpg", "images/image3.jpg", "images/image4.jpg", "images/image5.jpg",
-                "images/image6.jpg", "images/image7.jpg", "images/image8.jpg", "images/image9.jpg", "images/image10.jpg",
-                "images/image11.jpg", "images/image12.jpg", "images/image13.jpg", "images/image14.jpg", "images/image15.jpg",
-                "images/image16.jpg", "images/image17.jpg", "images/image18.jpg", "images/image19.jpg", "images/image20.jpg",
-                "images/image21.jpg", "images/image22.jpg", "images/image23.jpg", "images/image24.jpg", "images/image25.jpg",
-                "images/image26.jpg", "images/image27.jpg", "images/image28.jpg", "images/image29.jpg", "images/image30.jpg"
-            ];
+        const allImages = [
+            "images/image1.jpg", "images/image2.jpg", "images/image3.jpg", "images/image4.jpg", "images/image5.jpg",
+            "images/image6.jpg", "images/image7.jpg", "images/image8.jpg", "images/image9.jpg", "images/image10.jpg",
+            "images/image11.jpg", "images/image12.jpg", "images/image13.jpg", "images/image14.jpg", "images/image15.jpg",
+            "images/image16.jpg", "images/image17.jpg", "images/image18.jpg", "images/image19.jpg", "images/image20.jpg",
+            "images/image21.jpg", "images/image22.jpg", "images/image23.jpg", "images/image24.jpg", "images/image25.jpg",
+            "images/image26.jpg", "images/image27.jpg", "images/image28.jpg", "images/image29.jpg", "images/image30.jpg"
+        ];
 
-            // ---- alluring phrases (extra mystique) ----
-            const whispers = [
-                "unveil", "confidential", "just for you", "locked", "private", "adore", "secrets",
-                "forbidden", "velvet", "midnight", "serenity", "desire", "mystique", "whisper",
-                "shadow", "luna", "bloom", "eclipse", "enchant", "veil", "crimson", "noir"
-            ];
+        const imagesToShow = 8;
+        const galleryContainer = document.getElementById('gallery');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-            function getRandomPhrase() {
-                return whispers[Math.floor(Math.random() * whispers.length)];
-            }
+        // Function to select and display 8 completely random images
+        function showRandomImages() {
+            galleryContainer.innerHTML = '';
 
-            const gallery = document.getElementById('gallery');
-            const loadBtn = document.getElementById('loadMoreBtn');
+            const shuffled = [...allImages].sort(() => 0.5 - Math.random());
+            const selection = shuffled.slice(0, imagesToShow);
 
-            // ----- show 8 random images (with overlay) -----
-            function renderRandomGallery() {
-                gallery.innerHTML = '';
+            selection.forEach((src, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'gallery-item-wrapper fade-in';
+                // Beautiful cascading delay effect
+                wrapper.style.animationDelay = `${index * 0.08}s`;
 
-                // shuffle & pick 8
-                const shuffled = [...imageBase].sort(() => Math.random() - 0.5);
-                const selection = shuffled.slice(0, 8);
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = "Private Gallery Image";
+                img.className = "gallery-item";
+                
+                img.onerror = function() {
+                    wrapper.style.display = 'none';
+                };
+                
+                wrapper.appendChild(img);
+                galleryContainer.appendChild(wrapper);
+            });
+        }
 
-                selection.forEach((src, idx) => {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'gallery-item-wrapper fade-in';
-                    wrapper.style.animationDelay = `${idx * 0.08}s`;
-
-                    const img = document.createElement('img');
-                    img.src = src;
-                    img.alt = 'private collection';
-                    img.className = 'gallery-item';
-                    img.loading = 'lazy';
-
-                    // overlay
-                    const overlay = document.createElement('div');
-                    overlay.className = 'card-overlay';
-                    const span = document.createElement('span');
-                    span.className = 'overlay-text';
-                    span.textContent = getRandomPhrase().toUpperCase();
-                    overlay.appendChild(span);
-
-                    wrapper.appendChild(img);
-                    wrapper.appendChild(overlay);
-
-                    // if image fails, hide gracefully (no broken icons)
-                    img.onerror = function() {
-                        wrapper.style.display = 'none';
-                    };
-
-                    gallery.appendChild(wrapper);
-                });
-            }
-
-            // ---- click event ----
-            loadBtn.addEventListener('click', renderRandomGallery);
-
-            // ---- initial load ----
-            renderRandomGallery();
-
-            // ---- extra: if someone wants to double-tap the vibe, we keep it smooth ----
-            // (optional: preload nothing, but we keep it pure)
-        })();
+        loadMoreBtn.addEventListener('click', showRandomImages);
+        showRandomImages();
     </script>
 
-    <!-- tiny note: your images live in /images/ folder – replace with actual filenames -->
 </body>
 </html>
