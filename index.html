@@ -16,10 +16,24 @@
             color: #e0e0e0;
         }
 
+        h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            color: #888;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
         /* Responsive grid layout with masonry-like feel */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Sized down slightly to look great with 8 items */
             gap: 24px;
             margin-bottom: 50px;
             justify-content: center;
@@ -97,11 +111,14 @@
 </head>
 <body>
 
+    <h1>My Portfolio</h1>
+    <p class="subtitle">A curated collection of recent shots</p>
+
     <!-- The container where JavaScript will inject the images -->
     <div id="gallery" class="gallery-grid"></div>
 
-    <!-- The trigger button (still in the exact same place at the bottom) -->
-    <button id="loadMoreBtn" class="load-btn">Show 5 New Random Images</button>
+    <!-- The trigger button -->
+    <button id="loadMoreBtn" class="load-btn">Show 8 New Random Images</button>
 
     <script>
         const allImages = [
@@ -113,11 +130,11 @@
             "images/image26.jpg", "images/image27.jpg", "images/image28.jpg", "images/image29.jpg", "images/image30.jpg"
         ];
 
-        const imagesToShow = 5;
+        const imagesToShow = 8; // Now set to show 8 images
         const galleryContainer = document.getElementById('gallery');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-        // Function to select and display 5 completely random images
+        // Function to select and display 8 completely random images
         function showRandomImages() {
             // Clear out the previous images from the screen
             galleryContainer.innerHTML = '';
@@ -125,7 +142,7 @@
             // Clone and shuffle the entire image array
             const shuffled = [...allImages].sort(() => 0.5 - Math.random());
 
-            // Take the first 5 images from the shuffled deck
+            // Take the first 8 images from the shuffled deck
             const selection = shuffled.slice(0, imagesToShow);
 
             // Create and show them on the screen
