@@ -81,7 +81,7 @@
             color: #e5c158;
         }
 
-        /* Interactive Theater Spotlight Mask (For Welcome & Cheeky Screens) */
+        /* Interactive Theater Spotlight Mask */
         .spotlight-mask {
             position: fixed;
             top: 0;
@@ -90,7 +90,7 @@
             height: 100vh;
             pointer-events: none; /* Allows gestures to pass through to container */
             z-index: 3;
-            /* Massive, dramatic sweeping spotlight beam for Page 1 */
+            /* Default dramatic sweeping spotlight beam for Page 1 */
             background: radial-gradient(
                 circle 260px at var(--spot-x, 50%) var(--spot-y, 50%), 
                 rgba(229, 193, 88, 0.28) 0%, 
@@ -101,6 +101,19 @@
             opacity: 0;
             transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
             will-change: background;
+        }
+
+        /* SPECIAL CHEEKY SCREEN ADJUSTMENT:
+           When cheeky page is active, we expand the glow radius (from 260px to 450px) 
+           so light spills upward to reveal the header and switch button! */
+        body.cheeky-active .spotlight-mask {
+            background: radial-gradient(
+                circle 450px at var(--spot-x, 50%) var(--spot-y, 45%), 
+                rgba(229, 193, 88, 0.32) 0%, 
+                rgba(229, 193, 88, 0.12) 50%,
+                rgba(8, 8, 8, 0.5) 75%, 
+                rgba(2, 2, 2, 1) 100%
+            );
         }
 
         body.spotlight-active .spotlight-mask {
@@ -367,11 +380,11 @@
                 targetSpotX = Math.random() * (window.innerWidth - 120) + 60;
                 targetSpotY = Math.random() * (window.innerHeight - 160) + 80;
             } 
-            // SPECIAL CHEEKY SCREEN RULE: If she stops interacting on the cheeky page, snap back to center
-            else if (!isUserInteractingSpot && isCheekyScreenActive) {
-                const rect = cheekyScreen.getBoundingClientRect();
-                targetSpotX = rect.left + rect.width / 2;
-                targetSpotY = rect.top + rect.height / 2;
+            // SPECIAL CHEEKY SCREEN RULE: Lock the light directly to the screen center 
+            // so the massive expanded glow stays centered and illuminates the button perfectly!
+            else if (isCheekyScreenActive) {
+                targetSpotX = window.innerWidth / 2;
+                targetSpotY = window.innerHeight / 2;
             }
             setTimeout(getNewSpotlightTarget, Math.random() * 1500 + 1500);
         }
@@ -413,8 +426,8 @@
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            // PAGE 1 & CHEEKY PAGE: Manual Stage Spotlight (Allows dragging on Cheeky Page now!)
-            if (lightsOn && !galleryUnlocked) {
+            // PAGE 1 ONLY: Manual Stage Spotlight (Disabled on cheeky page so it stays locked and expanded)
+            if (lightsOn && !galleryUnlocked && !isCheekyScreenActive) {
                 isUserInteractingSpot = true;
                 clearTimeout(spotTimeout);
                 
@@ -469,15 +482,16 @@
                 } else {
                     // Caught Cheating Screen (since they unlocked the gallery already)
                     isCheekyScreenActive = true; 
+                    document.body.classList.add('cheeky-active'); // Add styling class for larger glow radius!
+                    
                     welcomeScreen.style.display = 'none';
                     cheekyScreen.style.display = 'flex';
                     galleryContainer.style.display = 'none';
                     loadMoreBtn.style.display = 'none';
 
-                    // Align spotlight target over the exact middle of the cheeky warning message initially
-                    const rect = cheekyScreen.getBoundingClientRect();
-                    targetSpotX = rect.left + rect.width / 2;
-                    targetSpotY = rect.top + rect.height / 2;
+                    // Lock target position strictly to the center
+                    targetSpotX = window.innerWidth / 2;
+                    targetSpotY = window.innerHeight / 2;
 
                     // Suggest button tap via pulsing glow
                     switchBtn.classList.add('suggest-tap');
@@ -485,8 +499,10 @@
             } else {
                 // TURN THE LIGHTS OFF (Return to Vault/Darkness)
                 lightsOn = false;
-                isCheekyScreenActive = false; // Release the cheeky flag
+                isCheekyScreenActive = false; // Release the cheeky flags
                 document.body.classList.remove('spotlight-active');
+                document.body.classList.remove('cheeky-active');
+                
                 switchBtn.innerText = "Turn Light On 💡";
 
                 welcomeScreen.style.display = 'none';
@@ -516,6 +532,7 @@
                 
                 // Cut the theater spotlight, activate the wandering flashlight
                 document.body.classList.remove('spotlight-active');
+                document.body.classList.remove('cheeky-active');
                 document.body.classList.add('gallery-active');
                 
                 // Hide welcome screen and show grid
