@@ -59,6 +59,28 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* Flashing glow animation to influence the user to tap it */
+        @keyframes pulseGlow {
+            0% {
+                background: rgba(229, 193, 88, 0);
+                box-shadow: 0 0 0 0 rgba(229, 193, 88, 0);
+            }
+            50% {
+                background: rgba(229, 193, 88, 0.15);
+                box-shadow: 0 0 15px 2px rgba(229, 193, 88, 0.4);
+            }
+            100% {
+                background: rgba(229, 193, 88, 0);
+                box-shadow: 0 0 0 0 rgba(229, 193, 88, 0);
+            }
+        }
+
+        .switch-btn.suggest-tap {
+            animation: pulseGlow 1.8s infinite ease-in-out;
+            border-color: #e5c158;
+            color: #e5c158;
+        }
+
         /* Interactive Theater Spotlight Mask (For Welcome & Cheeky Screens) */
         .spotlight-mask {
             position: fixed;
@@ -384,7 +406,7 @@
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
             if (lightsOn && !galleryUnlocked) {
-                // PAGE 1: Manual Stage Spotlight
+                // PAGE 1 (Before Unlock): Manual Stage Spotlight
                 isUserInteractingSpot = true;
                 clearTimeout(spotTimeout);
                 
@@ -441,6 +463,14 @@
                     cheekyScreen.style.display = 'flex';
                     galleryContainer.style.display = 'none';
                     loadMoreBtn.style.display = 'none';
+
+                    // SNAP SPOTLIGHT TARGETS DIRECTLY OVER THE CHEEKY MESSAGE
+                    const rect = cheekyScreen.getBoundingClientRect();
+                    targetSpotX = rect.left + rect.width / 2;
+                    targetSpotY = rect.top + rect.height / 2;
+
+                    // Add the pulsing flashing animation to the switch button
+                    switchBtn.classList.add('suggest-tap');
                 }
             } else {
                 // TURN THE LIGHTS OFF (Return to Vault/Darkness)
@@ -450,6 +480,9 @@
 
                 welcomeScreen.style.display = 'none';
                 cheekyScreen.style.display = 'none';
+                
+                // Stop the pulsing animation instantly
+                switchBtn.classList.remove('suggest-tap');
 
                 if (galleryUnlocked) {
                     // Turn on the wandering flashlight and return to the active gallery
