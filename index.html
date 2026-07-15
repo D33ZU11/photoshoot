@@ -3,100 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Gallery</title>
+    <title>The Midnight Muse</title>
     <style>
-        /* Modern, dark-mode inspired styling */
+        /* Deep, velvety dark background */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 60px 20px;
             text-align: center;
-            background-color: #121212;
+            background: radial-gradient(circle at center, #151515 0%, #0a0a0a 100%);
             color: #e0e0e0;
+            overflow-x: hidden;
         }
 
+        /* Elegant, premium gold title */
         h1 {
-            color: #ffffff;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
+            font-family: 'Playfair Display', Georgia, "Times New Roman", serif;
+            color: #d4af37; /* Rich Gold */
+            font-size: 3rem;
+            font-weight: 400;
+            margin-bottom: 5px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
         }
 
+        /* Playful, provocative subtitle */
         p.subtitle {
-            color: #888;
-            font-size: 1.1rem;
-            margin-bottom: 40px;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            color: #a89060;
+            font-size: 1.25rem;
+            margin-bottom: 50px;
+            letter-spacing: 1px;
         }
 
-        /* Responsive grid layout with masonry-like feel */
+        /* Responsive grid layout */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Sized down slightly to look great with 8 items */
-            gap: 24px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 28px;
+            margin-bottom: 60px;
             justify-content: center;
         }
 
-        /* Container for individual images to handle zoom effects cleanly */
+        /* Smooth, premium image container */
         .gallery-item-wrapper {
             overflow: hidden;
-            border-radius: 12px;
-            background-color: #1e1e1e;
-            aspect-ratio: 4 / 3; /* Keeps all image containers uniform */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 8px;
+            background-color: #111;
+            aspect-ratio: 4 / 3;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.1); /* Subtle gold border */
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+                        border-color 0.4s ease;
             cursor: pointer;
         }
 
-        /* Hover effect on the image container */
+        /* Lift and glowing border on hover */
         .gallery-item-wrapper:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
+            border-color: rgba(212, 175, 55, 0.4);
         }
 
         .gallery-item {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: block;
         }
 
-        /* Subtle zoom on the actual image when hovering */
+        /* Slow cinematic zoom on hover */
         .gallery-item-wrapper:hover .gallery-item {
-            transform: scale(1.05);
+            transform: scale(1.08);
         }
 
-        /* Modern, pill-shaped button styling */
+        /* Seductive, glowing interactive button */
         .load-btn {
-            background-color: #ffffff;
-            color: #121212;
-            border: none;
-            padding: 14px 32px;
-            font-size: 16px;
+            background: transparent;
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            padding: 16px 38px;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 18px;
             font-weight: 600;
-            border-radius: 30px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
         }
 
+        /* Sleek hover state: button fills with gold, glows, and text turns dark */
         .load-btn:hover {
-            background-color: #e0e0e0;
-            transform: scale(1.02);
+            background-color: #d4af37;
+            color: #0a0a0a;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
         }
 
         .load-btn:active {
-            transform: scale(0.98);
+            transform: translateY(1px);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
         }
 
-        /* Quick fade-in animation for newly loaded images */
+        /* Elegant fade-in for images */
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(15px);
             }
             to {
                 opacity: 1;
@@ -105,20 +127,20 @@
         }
 
         .fade-in {
-            animation: fadeIn 0.6s ease forwards;
+            animation: fadeIn 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
         }
     </style>
 </head>
 <body>
 
-    <h1>My Portfolio</h1>
-    <p class="subtitle">A curated collection of recent shots</p>
+    <h1>The Velvet Vault</h1>
+    <p class="subtitle">A private showcase of shadow & secrets. Strictly for your eyes only.</p>
 
     <!-- The container where JavaScript will inject the images -->
     <div id="gallery" class="gallery-grid"></div>
 
     <!-- The trigger button -->
-    <button id="loadMoreBtn" class="load-btn">Show 8 New Random Images</button>
+    <button id="loadMoreBtn" class="load-btn">Unveil More Secrets</button>
 
     <script>
         const allImages = [
@@ -130,7 +152,7 @@
             "images/image26.jpg", "images/image27.jpg", "images/image28.jpg", "images/image29.jpg", "images/image30.jpg"
         ];
 
-        const imagesToShow = 8; // Now set to show 8 images
+        const imagesToShow = 8;
         const galleryContainer = document.getElementById('gallery');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
 
@@ -152,7 +174,7 @@
 
                 const img = document.createElement('img');
                 img.src = src;
-                img.alt = "Gallery Image";
+                img.alt = "Private Gallery Image";
                 img.className = "gallery-item";
                 
                 // If an image doesn't exist, hide the broken container automatically
