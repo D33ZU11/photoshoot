@@ -36,6 +36,7 @@
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 24px;
             margin-bottom: 50px;
+            justify-content: center;
         }
 
         /* Container for individual images to handle zoom effects cleanly */
@@ -91,10 +92,6 @@
             transform: scale(0.98);
         }
 
-        .load-btn:hidden {
-            display: none;
-        }
-
         /* Quick fade-in animation for newly loaded images */
         @keyframes fadeIn {
             from {
@@ -120,50 +117,39 @@
     <!-- The container where JavaScript will inject the images -->
     <div id="gallery" class="gallery-grid"></div>
 
-    <!-- The trigger button -->
-    <button id="loadMoreBtn" class="load-btn">Load More Images</button>
+    <!-- The trigger button (Now re-labeled to fit its new job!) -->
+    <button id="loadMoreBtn" class="load-btn">Show 5 New Random Images</button>
 
     <script>
-        // Your exact image list matching your uploaded files
+        // 1. ADDED ALL YOUR IMAGES HERE
+        // I have pre-filled this up to image30.jpg. 
+        // If you upload more images, just add them to this list following the exact same pattern!
         const allImages = [
-            "images/image1.jpg",
-            "images/image2.jpg",
-            "images/image3.jpg",
-            "images/image4.jpg", // <--- Check this file's name in your GitHub folder!
-            "images/image5.jpg",
-            "images/image6.jpg",
-            "images/image7.jpg",
-            "images/image8.jpg",
-            "images/image9.jpg",
-            "images/image10.jpg",
-            "images/image11.jpg",
-            "images/image12.jpg"
+            "images/image1.jpg", "images/image2.jpg", "images/image3.jpg", "images/image4.jpg", "images/image5.jpg",
+            "images/image6.jpg", "images/image7.jpg", "images/image8.jpg", "images/image9.jpg", "images/image10.jpg",
+            "images/image11.jpg", "images/image12.jpg", "images/image13.jpg", "images/image14.jpg", "images/image15.jpg",
+            "images/image16.jpg", "images/image17.jpg", "images/image18.jpg", "images/image19.jpg", "images/image20.jpg",
+            "images/image21.jpg", "images/image22.jpg", "images/image23.jpg", "images/image24.jpg", "images/image25.jpg",
+            "images/image26.jpg", "images/image27.jpg", "images/image28.jpg", "images/image29.jpg", "images/image30.jpg"
         ];
 
-        // Shuffle function to randomize the image order
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        // Shuffle the images as soon as the script runs
-        shuffle(allImages);
-
-        let currentIndex = 0;
-        const imagesPerPage = 5;
-
+        const imagesToShow = 5;
         const galleryContainer = document.getElementById('gallery');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-        // Function to load and display the next batch of images
-        function loadImages() {
-            const nextIndex = currentIndex + imagesPerPage;
-            const batch = allImages.slice(currentIndex, nextIndex);
+        // Function to select and display 5 completely random images
+        function showRandomImages() {
+            // 1. Clear out the previous images from the screen
+            galleryContainer.innerHTML = '';
 
-            batch.forEach(src => {
+            // 2. Clone and shuffle the entire image array so we don't mess up the original list
+            const shuffled = [...allImages].sort(() => 0.5 - Math.random());
+
+            // 3. Take the first 5 images from the shuffled deck
+            const selection = shuffled.slice(0, imagesToShow);
+
+            // 4. Create and show them on the screen
+            selection.forEach(src => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'gallery-item-wrapper fade-in';
 
@@ -172,23 +158,21 @@
                 img.alt = "Gallery Image";
                 img.className = "gallery-item";
                 
+                // If an image doesn't exist, hide the broken container automatically
+                img.onerror = function() {
+                    wrapper.style.display = 'none';
+                };
+                
                 wrapper.appendChild(img);
                 galleryContainer.appendChild(wrapper);
             });
-
-            currentIndex = nextIndex;
-
-            // Hide button if we run out of images
-            if (currentIndex >= allImages.length) {
-                loadMoreBtn.style.display = 'none';
-            }
         }
 
-        // Event listener for the button click
-        loadMoreBtn.addEventListener('click', loadImages);
+        // When they click the button, grab a brand new set of random images
+        loadMoreBtn.addEventListener('click', showRandomImages);
 
-        // Load the initial first batch of 5 random images automatically on page load
-        loadImages();
+        // Load the first random batch immediately when the page finishes loading
+        showRandomImages();
     </script>
 
 </body>
