@@ -138,7 +138,7 @@
             margin-bottom: 10px;
             text-align: center;
             flex-shrink: 0;
-            z-index: 10;
+            z-index: 10; /* Safely stays above masks */
         }
 
         h1 {
@@ -341,6 +341,7 @@
         
         let lightsOn = false; // Starts in pitch black
         let galleryUnlocked = false;
+        let isCheekyScreenActive = false; // Tracks if they are currently on the warning page
         
         // Interaction states for both systems
         let isUserInteractingSpot = false;
@@ -361,7 +362,8 @@
 
         // --- SPOTLIGHT (PAGE 1) AUTOMATIC DRIFTING ---
         function getNewSpotlightTarget() {
-            if (!isUserInteractingSpot) {
+            // Stop drifting completely if the warning/cheeky screen is up
+            if (!isUserInteractingSpot && !isCheekyScreenActive) {
                 targetSpotX = Math.random() * (window.innerWidth - 120) + 60;
                 targetSpotY = Math.random() * (window.innerHeight - 160) + 80;
             }
@@ -405,8 +407,9 @@
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            if (lightsOn && !galleryUnlocked) {
-                // PAGE 1 (Before Unlock): Manual Stage Spotlight
+            // Block dragging on page 1 if the cheeky screen is locked active
+            if (lightsOn && !galleryUnlocked && !isCheekyScreenActive) {
+                // PAGE 1 (Welcome Screen Only): Manual Stage Spotlight
                 isUserInteractingSpot = true;
                 clearTimeout(spotTimeout);
                 
@@ -418,7 +421,7 @@
                 }, 2000);
             } 
             else if (!lightsOn && galleryUnlocked) {
-                // PAGE 2: Manual Flashlight Control
+                // PAGE 2 (Gallery): Manual Flashlight Control
                 isUserInteractingFlash = true;
                 clearTimeout(flashTimeout);
 
@@ -459,22 +462,24 @@
                     loadMoreBtn.classList.add('first-reveal-fade');
                 } else {
                     // Caught Cheating Screen (since they unlocked the gallery already)
+                    isCheekyScreenActive = true; // Lock the spotlight target coordinate
                     welcomeScreen.style.display = 'none';
                     cheekyScreen.style.display = 'flex';
                     galleryContainer.style.display = 'none';
                     loadMoreBtn.style.display = 'none';
 
-                    // SNAP SPOTLIGHT TARGETS DIRECTLY OVER THE CHEEKY MESSAGE
+                    // HARD CENTERING: Anchor the spotlight over the exact middle of the cheeky warning message
                     const rect = cheekyScreen.getBoundingClientRect();
                     targetSpotX = rect.left + rect.width / 2;
                     targetSpotY = rect.top + rect.height / 2;
 
-                    // Add the pulsing flashing animation to the switch button
+                    // Immediately suggest button tap via pulsing glow
                     switchBtn.classList.add('suggest-tap');
                 }
             } else {
                 // TURN THE LIGHTS OFF (Return to Vault/Darkness)
                 lightsOn = false;
+                isCheekyScreenActive = false; // Release the locked coordinate
                 document.body.classList.remove('spotlight-active');
                 switchBtn.innerText = "Turn Light On 💡";
 
@@ -501,6 +506,7 @@
                 // First unlock sequence
                 galleryUnlocked = true;
                 lightsOn = false;
+                isCheekyScreenActive = false;
                 
                 // Cut the theater spotlight, activate the wandering flashlight
                 document.body.classList.remove('spotlight-active');
