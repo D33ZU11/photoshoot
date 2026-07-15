@@ -5,70 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Gallery</title>
     <style>
+        /* Modern, dark-mode inspired styling */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            max-width: 1000px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
             text-align: center;
-            background-color: #f9f9f9;
+            background-color: #121212;
+            color: #e0e0e0;
         }
 
         h1 {
-            color: #333;
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
         }
 
-        /* Responsive grid layout for the images */
+        p.subtitle {
+            color: #888;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        /* Responsive grid layout with masonry-like feel */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+
+        /* Container for individual images to handle zoom effects cleanly */
+        .gallery-item-wrapper {
+            overflow: hidden;
+            border-radius: 12px;
+            background-color: #1e1e1e;
+            aspect-ratio: 4 / 3; /* Keeps all image containers uniform */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* Hover effect on the image container */
+        .gallery-item-wrapper:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
         }
 
         .gallery-item {
             width: 100%;
-            height: 200px;
-            object-fit: cover; /* Keeps image proportions clean without stretching */
-            border-radius: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            background-color: #ddd; /* Placeholder background while loading */
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            display: block;
         }
 
-        /* Button styling */
+        /* Subtle zoom on the actual image when hovering */
+        .gallery-item-wrapper:hover .gallery-item {
+            transform: scale(1.05);
+        }
+
+        /* Modern, pill-shaped button styling */
         .load-btn {
-            background-color: #007bff;
-            color: white;
+            background-color: #ffffff;
+            color: #121212;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 32px;
             font-size: 16px;
-            border-radius: 4px;
+            font-weight: 600;
+            border-radius: 30px;
             cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
         }
 
         .load-btn:hover {
-            background-color: #0056b3;
+            background-color: #e0e0e0;
+            transform: scale(1.02);
+        }
+
+        .load-btn:active {
+            transform: scale(0.98);
         }
 
         .load-btn:hidden {
             display: none;
         }
+
+        /* Quick fade-in animation for newly loaded images */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
     </style>
 </head>
 <body>
 
-    <h1>My Image Gallery</h1>
+    <h1>My Portfolio</h1>
+    <p class="subtitle">A curated collection of recent shots</p>
 
     <!-- The container where JavaScript will inject the images -->
     <div id="gallery" class="gallery-grid"></div>
 
     <!-- The trigger button -->
-    <button id="loadMoreBtn" class="load-btn">Load Next 5 Images</button>
+    <button id="loadMoreBtn" class="load-btn">Load More Images</button>
 
     <script>
-        // 1. LIST YOUR IMAGES HERE (Updated to match your actual filenames!)
+        // Your exact image list matching your uploaded files
         const allImages = [
             "images/image1.jpg",
             "images/image2.jpg",
@@ -92,20 +148,24 @@
 
         // Function to load and display the next batch of images
         function loadImages() {
-            // Determine the stopping point for this batch
             const nextIndex = currentIndex + imagesPerPage;
             const batch = allImages.slice(currentIndex, nextIndex);
 
-            // Loop through the batch and append them to the gallery container
             batch.forEach(src => {
+                // Create a wrapper div to handle the hover overflow effects properly
+                const wrapper = document.createElement('div');
+                wrapper.className = 'gallery-item-wrapper fade-in';
+
                 const img = document.createElement('img');
                 img.src = src;
                 img.alt = "Gallery Image";
                 img.className = "gallery-item";
-                galleryContainer.appendChild(img);
+                
+                // Nest the image inside the wrapper, and the wrapper inside the grid
+                wrapper.appendChild(img);
+                galleryContainer.appendChild(wrapper);
             });
 
-            // Update our current tracking index
             currentIndex = nextIndex;
 
             // If we have reached or exceeded the total number of images, hide the button
