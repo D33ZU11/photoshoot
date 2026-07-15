@@ -21,6 +21,13 @@
             color: #f5f5f7;
             font-family: 'Montserrat', sans-serif;
             box-sizing: border-box;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Lights On Mode Styles */
+        body.lights-on {
+            background: #f4f4f0; /* Soft, clean gallery white */
+            color: #1a1a1a;
         }
 
         /* Main container structured to dynamically fit any phone height */
@@ -36,6 +43,27 @@
             z-index: 1;
         }
 
+        /* The Interactive Light Switch */
+        .switch-container {
+            margin-top: 10px;
+            z-index: 10;
+        }
+
+        .switch-btn {
+            background: transparent;
+            border: 1px solid currentColor;
+            color: inherit;
+            padding: 8px 16px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         /* The Mysterious Flashlight Overlay */
         .flashlight-overlay {
             position: fixed;
@@ -43,16 +71,21 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            pointer-events: none; /* Crucial: allows tapping "through" the darkness to buttons/images */
-            z-index: 5; /* Sits directly over the content */
-            /* Creates a dark mask with a beautifully soft, warm golden spotlight hole */
+            pointer-events: none;
+            z-index: 5;
             background: radial-gradient(
                 circle 110px at var(--x, 50%) var(--y, 50%), 
                 rgba(229, 193, 88, 0.08) 0%, 
                 rgba(8, 8, 8, 0.2) 50%, 
                 rgba(8, 8, 8, 0.98) 95%
             );
-            will-change: background; /* Optimizes mobile performance */
+            opacity: 0; /* Hidden when lights are on */
+            transition: opacity 0.5s ease;
+            will-change: background;
+        }
+
+        body.dark-mode .flashlight-overlay {
+            opacity: 1; /* Fully active when lights are off */
         }
 
         /* Compact, elegant header */
@@ -61,7 +94,7 @@
             margin-bottom: 10px;
             text-align: center;
             flex-shrink: 0;
-            z-index: 10; /* Keeps text slightly readable even in shadows */
+            z-index: 10;
         }
 
         h1 {
@@ -72,6 +105,11 @@
             margin: 0 0 4px 0;
             letter-spacing: 4px;
             text-transform: uppercase;
+            transition: color 0.5s ease;
+        }
+
+        body.lights-on h1 {
+            color: #bfa370; /* Slightly deeper gold for readability on white */
         }
 
         p.subtitle {
@@ -101,16 +139,43 @@
         .teaser-quote {
             font-family: 'Cormorant Garamond', Georgia, serif;
             font-style: italic;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             color: #d4af37;
             line-height: 1.5;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px rgba(229, 193, 88, 0.15);
+            margin-bottom: 15px;
+            transition: color 0.5s ease;
+        }
+
+        body.lights-on .teaser-quote {
+            color: #1a1a1a;
+        }
+
+        .instruction-tip {
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        /* Cheeky Cheater Screen */
+        .cheeky-screen {
+            display: none; /* Only triggered if they turn lights ON during gallery view */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 10;
         }
 
         /* 2x3 grid that takes up the remaining vertical screen space */
         .gallery-grid {
-            display: none; /* Hidden on load until button is clicked */
+            display: none; 
             grid-template-columns: repeat(2, 1fr); 
             grid-template-rows: repeat(3, 1fr);    
             gap: 10px;
@@ -146,9 +211,9 @@
 
         /* Seductive, low-profile button at the very bottom */
         .load-btn {
-            background: #080808;
-            color: #e5c158;
-            border: 1px solid rgba(229, 193, 88, 0.5);
+            background: transparent;
+            color: inherit;
+            border: 1px solid currentColor;
             padding: 14px 0;
             width: 100%;
             max-width: 280px;
@@ -162,13 +227,13 @@
             margin-top: 10px;
             margin-bottom: 5px;
             flex-shrink: 0;
-            z-index: 10; /* Ensures button stays easily tappable */
+            z-index: 10; 
             transition: all 0.3s ease;
             -webkit-tap-highlight-color: transparent; 
         }
 
         .load-btn:active {
-            background-color: #e5c158;
+            background: #e5c158;
             color: #080808;
             border-color: #e5c158;
             transform: scale(0.98);
@@ -185,9 +250,9 @@
         }
     </style>
 </head>
-<body>
+<body class="lights-on"> <!-- Starts with light background -->
 
-    <!-- The physical flashlight layer that wanders the screen -->
+    <!-- The physical flashlight layer -->
     <div class="flashlight-overlay" id="flashlight"></div>
 
     <div class="app-container">
@@ -195,17 +260,27 @@
         <header>
             <h1>The Velvet Vault</h1>
             <p class="subtitle">Strictly Confidential</p>
+            <div class="switch-container">
+                <button id="switchBtn" class="switch-btn">Turn Light Off 💡</button>
+            </div>
         </header>
 
-        <!-- 1. The Welcome Screen -->
+        <!-- 1. The Welcome Screen (Shown initially when lights are ON) -->
         <div id="welcomeScreen" class="welcome-screen fade-in">
-            <p class="teaser-quote">"I had a little private photoshoot just for you...<br>Care to see what's hidden inside?"</p>
+            <p class="teaser-quote">"I set up a little private gallery just for you..."</p>
+            <p class="instruction-tip">Turn off the light to step inside.</p>
         </div>
 
-        <!-- 2. The Photo Grid -->
+        <!-- 2. Cheeky Screen (Triggered if they cheat and turn the lights back ON) -->
+        <div id="cheekyScreen" class="cheeky-screen fade-in">
+            <p class="teaser-quote">"No cheating! 😉<br>A secret vault can only be viewed in the dark."</p>
+            <p class="instruction-tip">Turn the light back off to continue...</p>
+        </div>
+
+        <!-- 3. The Photo Grid -->
         <div id="gallery" class="gallery-grid"></div>
 
-        <!-- 3. The Control Button -->
+        <!-- 4. The Control Button -->
         <button id="loadMoreBtn" class="load-btn">Unveil the Vault</button>
 
     </div>
@@ -222,10 +297,13 @@
 
         const imagesToShow = 6;
         const welcomeScreen = document.getElementById('welcomeScreen');
+        const cheekyScreen = document.getElementById('cheekyScreen');
         const galleryContainer = document.getElementById('gallery');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const switchBtn = document.getElementById('switchBtn');
         const flashlight = document.getElementById('flashlight');
         
+        let lightsOn = true;
         let hasUnlocked = false;
 
         // --- SMOOTH WANDERING FLASHLIGHT SCRIPT ---
@@ -234,19 +312,13 @@
         let targetX = currentX;
         let targetY = currentY;
 
-        // Randomly pick a new target coordinate on the screen
         function getNewTarget() {
-            // Keep the target slightly away from the absolute edges for better visibility
             targetX = Math.random() * (window.innerWidth - 160) + 80;
             targetY = Math.random() * (window.innerHeight - 200) + 100;
-            
-            // Pick a new spot every 1.5 to 3 seconds dynamically
             setTimeout(getNewTarget, Math.random() * 1500 + 1500);
         }
 
-        // Beautiful, continuous frame-by-frame drag/glide animation
         function animateFlashlight() {
-            // LERP: Move 3% of the remaining distance to target every frame (gives a heavy, cinematic drift)
             currentX += (targetX - currentX) * 0.03;
             currentY += (targetY - currentY) * 0.03;
 
@@ -256,21 +328,52 @@
             requestAnimationFrame(animateFlashlight);
         }
 
-        // Initialize flashlight movement
         getNewTarget();
         animateFlashlight();
 
 
-        // --- GALLERY CONTENT GENERATOR ---
+        // --- LIGHT SWITCH LOGIC ---
+        switchBtn.addEventListener('click', () => {
+            if (lightsOn) {
+                // TURN LIGHTS OFF (Enter the vault)
+                document.body.classList.remove('lights-on');
+                document.body.classList.add('dark-mode');
+                switchBtn.innerText = "Turn Light On 💡";
+                lightsOn = false;
+
+                // Hide cheekiness or introductory screens
+                cheekyScreen.style.display = 'none';
+                welcomeScreen.style.display = 'none';
+
+                // Display the grid and set up initial images if it's the first time
+                galleryContainer.style.display = 'grid';
+                if (!hasUnlocked) {
+                    showRandomImages();
+                    hasUnlocked = true;
+                }
+                loadMoreBtn.style.display = 'block';
+            } else {
+                // TURN LIGHTS ON (Cheating / Exiting)
+                document.body.classList.add('lights-on');
+                document.body.classList.remove('dark-mode');
+                switchBtn.innerText = "Turn Light Off 💡";
+                lightsOn = true;
+
+                // Hide photos completely and trigger cheeky callout
+                galleryContainer.style.display = 'none';
+                loadMoreBtn.style.display = 'none';
+                welcomeScreen.style.display = 'none';
+                cheekyScreen.style.display = 'flex';
+            }
+        });
+
+
+        // --- GALLERY GENERATOR ---
         function showRandomImages() {
             window.scrollTo({ top: 0, behavior: 'instant' });
 
-            if (!hasUnlocked) {
-                welcomeScreen.style.display = 'none';
-                galleryContainer.style.display = 'grid';
-                loadMoreBtn.innerText = "Unveil 6 More";
-                hasUnlocked = true;
-            }
+            // Ensure button text changes after first reveal
+            loadMoreBtn.innerText = "Unveil 6 More";
 
             galleryContainer.innerHTML = '';
 
@@ -295,6 +398,8 @@
             });
         }
 
+        // Hide main button until they actually turn off the lights for the first time
+        loadMoreBtn.style.display = 'none';
         loadMoreBtn.addEventListener('click', showRandomImages);
     </script>
 
