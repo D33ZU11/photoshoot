@@ -360,12 +360,18 @@
         let targetFlashX = currentFlashX;
         let targetFlashY = currentFlashY;
 
-        // --- SPOTLIGHT (PAGE 1) AUTOMATIC DRIFTING ---
+        // --- SPOTLIGHT (PAGE 1) AUTOMATIC DRIFTING & AUTO-RETURN ---
         function getNewSpotlightTarget() {
-            // Stop drifting completely if the warning/cheeky screen is up
+            // ONLY drift randomly if they are on the welcome page AND not dragging
             if (!isUserInteractingSpot && !isCheekyScreenActive) {
                 targetSpotX = Math.random() * (window.innerWidth - 120) + 60;
                 targetSpotY = Math.random() * (window.innerHeight - 160) + 80;
+            } 
+            // SPECIAL CHEEKY SCREEN RULE: If she stops interacting on the cheeky page, snap back to center
+            else if (!isUserInteractingSpot && isCheekyScreenActive) {
+                const rect = cheekyScreen.getBoundingClientRect();
+                targetSpotX = rect.left + rect.width / 2;
+                targetSpotY = rect.top + rect.height / 2;
             }
             setTimeout(getNewSpotlightTarget, Math.random() * 1500 + 1500);
         }
@@ -381,7 +387,7 @@
 
         // --- ANIMATION LOOP ---
         function animateLights() {
-            // Smoothly glide the Theater Spotlight (Page 1)
+            // Smoothly glide the Theater Spotlight (Page 1 & Cheeky Page)
             currentSpotX += (targetSpotX - currentSpotX) * 0.04;
             currentSpotY += (targetSpotY - currentSpotY) * 0.04;
             spotlight.style.setProperty('--spot-x', `${currentSpotX}px`);
@@ -407,18 +413,18 @@
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            // Block dragging on page 1 if the cheeky screen is locked active
-            if (lightsOn && !galleryUnlocked && !isCheekyScreenActive) {
-                // PAGE 1 (Welcome Screen Only): Manual Stage Spotlight
+            // PAGE 1 & CHEEKY PAGE: Manual Stage Spotlight (Allows dragging on Cheeky Page now!)
+            if (lightsOn && !galleryUnlocked) {
                 isUserInteractingSpot = true;
                 clearTimeout(spotTimeout);
                 
                 targetSpotX = clientX;
                 targetSpotY = clientY;
 
+                // When she lets go / stops dragging, set interactive to false so it smoothly floats back
                 spotTimeout = setTimeout(() => {
                     isUserInteractingSpot = false;
-                }, 2000);
+                }, 1000); // Glides back 1 second after touch stops
             } 
             else if (!lightsOn && galleryUnlocked) {
                 // PAGE 2 (Gallery): Manual Flashlight Control
@@ -462,24 +468,24 @@
                     loadMoreBtn.classList.add('first-reveal-fade');
                 } else {
                     // Caught Cheating Screen (since they unlocked the gallery already)
-                    isCheekyScreenActive = true; // Lock the spotlight target coordinate
+                    isCheekyScreenActive = true; 
                     welcomeScreen.style.display = 'none';
                     cheekyScreen.style.display = 'flex';
                     galleryContainer.style.display = 'none';
                     loadMoreBtn.style.display = 'none';
 
-                    // HARD CENTERING: Anchor the spotlight over the exact middle of the cheeky warning message
+                    // Align spotlight target over the exact middle of the cheeky warning message initially
                     const rect = cheekyScreen.getBoundingClientRect();
                     targetSpotX = rect.left + rect.width / 2;
                     targetSpotY = rect.top + rect.height / 2;
 
-                    // Immediately suggest button tap via pulsing glow
+                    // Suggest button tap via pulsing glow
                     switchBtn.classList.add('suggest-tap');
                 }
             } else {
                 // TURN THE LIGHTS OFF (Return to Vault/Darkness)
                 lightsOn = false;
-                isCheekyScreenActive = false; // Release the locked coordinate
+                isCheekyScreenActive = false; // Release the cheeky flag
                 document.body.classList.remove('spotlight-active');
                 switchBtn.innerText = "Turn Light On 💡";
 
