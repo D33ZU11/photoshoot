@@ -17,17 +17,10 @@
             width: 100%;
             height: 100%;
             overflow: hidden; /* Strict scroll lock */
-            background: #080808;
+            background: #020202; /* Deep pitch black start */
             color: #f5f5f7;
             font-family: 'Montserrat', sans-serif;
             box-sizing: border-box;
-            transition: background-color 0.5s ease, color 0.5s ease;
-        }
-
-        /* Lights On Mode Styles */
-        body.lights-on {
-            background: #f4f4f0; /* Soft, clean gallery white */
-            color: #1a1a1a;
         }
 
         /* Main container structured to dynamically fit any phone height */
@@ -43,7 +36,7 @@
             z-index: 1;
         }
 
-        /* The Interactive Light Switch */
+        /* Always visible Light Switch at the top */
         .switch-container {
             margin-top: 10px;
             z-index: 10;
@@ -51,11 +44,11 @@
 
         .switch-btn {
             background: transparent;
-            border: 1px solid currentColor;
-            color: inherit;
-            padding: 8px 16px;
+            border: 1px solid #e5c158;
+            color: #e5c158;
+            padding: 10px 20px;
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             border-radius: 20px;
@@ -64,7 +57,31 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* The Mysterious Flashlight Overlay */
+        /* The Interactive Spotlight Mask (For Welcome & Cheeky Screens) */
+        .spotlight-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 3;
+            /* Creates a dramatic vertical cone/oval spotlight on the center of the screen */
+            background: radial-gradient(
+                ellipse 160px 240px at 50% 50%, 
+                rgba(229, 193, 88, 0.15) 0%, 
+                rgba(8, 8, 8, 0.4) 40%, 
+                rgba(2, 2, 2, 1) 90%
+            );
+            opacity: 0;
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        body.spotlight-active .spotlight-mask {
+            opacity: 1; /* Shows the spotlight when lights are "ON" */
+        }
+
+        /* The Wandering Flashlight Layer (Only active during live gallery viewing) */
         .flashlight-overlay {
             position: fixed;
             top: 0;
@@ -77,15 +94,15 @@
                 circle 110px at var(--x, 50%) var(--y, 50%), 
                 rgba(229, 193, 88, 0.08) 0%, 
                 rgba(8, 8, 8, 0.2) 50%, 
-                rgba(8, 8, 8, 0.98) 95%
+                rgba(2, 2, 2, 0.98) 95%
             );
-            opacity: 0; /* Hidden when lights are on */
+            opacity: 0;
             transition: opacity 0.5s ease;
             will-change: background;
         }
 
-        body.dark-mode .flashlight-overlay {
-            opacity: 1; /* Fully active when lights are off */
+        body.gallery-active .flashlight-overlay {
+            opacity: 1; /* Turns on wandering flashlight only when photos are visible */
         }
 
         /* Compact, elegant header */
@@ -99,17 +116,12 @@
 
         h1 {
             font-family: 'Cormorant Garamond', Georgia, serif;
-            color: #e5c158; /* Soft Champagne Gold */
+            color: #e5c158; 
             font-size: 2.2rem;
             font-weight: 300;
             margin: 0 0 4px 0;
             letter-spacing: 4px;
             text-transform: uppercase;
-            transition: color 0.5s ease;
-        }
-
-        body.lights-on h1 {
-            color: #bfa370; /* Slightly deeper gold for readability on white */
         }
 
         p.subtitle {
@@ -121,9 +133,9 @@
             letter-spacing: 1px;
         }
 
-        /* Centered Welcome / Teaser Screen */
-        .welcome-screen {
-            display: flex;
+        /* Centered Screens (Welcome and Cheeky) */
+        .message-screen {
+            display: none; /* Controlled via JS */
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -133,47 +145,28 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
-            z-index: 10;
+            z-index: 4;
         }
 
         .teaser-quote {
             font-family: 'Cormorant Garamond', Georgia, serif;
             font-style: italic;
             font-size: 1.5rem;
-            color: #d4af37;
-            line-height: 1.5;
+            color: #e5c158;
+            line-height: 1.6;
             margin-bottom: 15px;
-            transition: color 0.5s ease;
-        }
-
-        body.lights-on .teaser-quote {
-            color: #1a1a1a;
         }
 
         .instruction-tip {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             letter-spacing: 1px;
             text-transform: uppercase;
+            color: #a69f88;
             opacity: 0.8;
             margin-top: 10px;
         }
 
-        /* Cheeky Cheater Screen */
-        .cheeky-screen {
-            display: none; /* Only triggered if they turn lights ON during gallery view */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            flex-grow: 1;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            z-index: 10;
-        }
-
-        /* 2x3 grid that takes up the remaining vertical screen space */
+        /* 2x3 Grid */
         .gallery-grid {
             display: none; 
             grid-template-columns: repeat(2, 1fr); 
@@ -184,9 +177,9 @@
             flex-grow: 1; 
             margin: 10px 0;
             min-height: 0; 
+            z-index: 2;
         }
 
-        /* Wrapper that flex-centers the actual image shape */
         .gallery-item-wrapper {
             position: relative;
             overflow: hidden;
@@ -197,7 +190,6 @@
             justify-content: center;
         }
 
-        /* Standardized border and shadow wraps the natural image edge */
         .gallery-item {
             max-width: 100%;
             max-height: 100%;
@@ -209,11 +201,12 @@
             display: block;
         }
 
-        /* Seductive, low-profile button at the very bottom */
+        /* The Reveal Button at the bottom */
         .load-btn {
+            display: none; /* Initially hidden until light turns on */
             background: transparent;
-            color: inherit;
-            border: 1px solid currentColor;
+            color: #e5c158;
+            border: 1px solid rgba(229, 193, 88, 0.5);
             padding: 14px 0;
             width: 100%;
             max-width: 280px;
@@ -228,18 +221,29 @@
             margin-bottom: 5px;
             flex-shrink: 0;
             z-index: 10; 
-            transition: all 0.3s ease;
             -webkit-tap-highlight-color: transparent; 
         }
 
         .load-btn:active {
             background: #e5c158;
-            color: #080808;
+            color: #020202;
             border-color: #e5c158;
             transform: scale(0.98);
         }
 
-        /* CSS Animations for smooth transitions */
+        /* 5-second delay fade-in animation for the first load */
+        @keyframes delayedFadeIn {
+            0% { opacity: 0; visibility: hidden; }
+            1% { visibility: visible; }
+            100% { opacity: 1; }
+        }
+
+        .first-reveal-fade {
+            animation: delayedFadeIn 2s ease-out 5s forwards;
+            opacity: 0; /* Keeps it invisible until animation starts */
+        }
+
+        /* Standard quick fade-in for images or general interactions */
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.98); }
             to { opacity: 1; transform: scale(1); }
@@ -250,9 +254,12 @@
         }
     </style>
 </head>
-<body class="lights-on"> <!-- Starts with light background -->
+<body>
 
-    <!-- The physical flashlight layer -->
+    <!-- Static Stage Spotlight Overlay -->
+    <div class="spotlight-mask" id="spotlight"></div>
+
+    <!-- Wandering Flashlight Overlay -->
     <div class="flashlight-overlay" id="flashlight"></div>
 
     <div class="app-container">
@@ -261,18 +268,17 @@
             <h1>The Velvet Vault</h1>
             <p class="subtitle">Strictly Confidential</p>
             <div class="switch-container">
-                <button id="switchBtn" class="switch-btn">Turn Light Off 💡</button>
+                <button id="switchBtn" class="switch-btn">Turn Light On 💡</button>
             </div>
         </header>
 
-        <!-- 1. The Welcome Screen (Shown initially when lights are ON) -->
-        <div id="welcomeScreen" class="welcome-screen fade-in">
-            <p class="teaser-quote">"I set up a little private gallery just for you..."</p>
-            <p class="instruction-tip">Turn off the light to step inside.</p>
+        <!-- 1. The Welcome Screen -->
+        <div id="welcomeScreen" class="message-screen fade-in">
+            <p class="teaser-quote">"I had a little private photoshoot just for you...<br>Care to see what's hidden inside?"</p>
         </div>
 
-        <!-- 2. Cheeky Screen (Triggered if they cheat and turn the lights back ON) -->
-        <div id="cheekyScreen" class="cheeky-screen fade-in">
+        <!-- 2. Cheeky Screen (If they cheat) -->
+        <div id="cheekyScreen" class="message-screen fade-in">
             <p class="teaser-quote">"No cheating! 😉<br>A secret vault can only be viewed in the dark."</p>
             <p class="instruction-tip">Turn the light back off to continue...</p>
         </div>
@@ -303,8 +309,8 @@
         const switchBtn = document.getElementById('switchBtn');
         const flashlight = document.getElementById('flashlight');
         
-        let lightsOn = true;
-        let hasUnlocked = false;
+        let lightsOn = false; // Starts in pitch black
+        let galleryUnlocked = false;
 
         // --- SMOOTH WANDERING FLASHLIGHT SCRIPT ---
         let currentX = window.innerWidth / 2;
@@ -332,51 +338,77 @@
         animateFlashlight();
 
 
-        // --- LIGHT SWITCH LOGIC ---
+        // --- MAIN APP CONTROLLER ---
+
+        // 1. Turning Lights On/Off
         switchBtn.addEventListener('click', () => {
-            if (lightsOn) {
-                // TURN LIGHTS OFF (Enter the vault)
-                document.body.classList.remove('lights-on');
-                document.body.classList.add('dark-mode');
-                switchBtn.innerText = "Turn Light On 💡";
-                lightsOn = false;
-
-                // Hide cheekiness or introductory screens
-                cheekyScreen.style.display = 'none';
-                welcomeScreen.style.display = 'none';
-
-                // Display the grid and set up initial images if it's the first time
-                galleryContainer.style.display = 'grid';
-                if (!hasUnlocked) {
-                    showRandomImages();
-                    hasUnlocked = true;
-                }
-                loadMoreBtn.style.display = 'block';
-            } else {
-                // TURN LIGHTS ON (Cheating / Exiting)
-                document.body.classList.add('lights-on');
-                document.body.classList.remove('dark-mode');
-                switchBtn.innerText = "Turn Light Off 💡";
+            if (!lightsOn) {
+                // TURN THE STAGE SPOTLIGHT ON
                 lightsOn = true;
+                document.body.classList.add('spotlight-active');
+                document.body.classList.remove('gallery-active');
+                switchBtn.innerText = "Turn Light Off 💡";
 
-                // Hide photos completely and trigger cheeky callout
-                galleryContainer.style.display = 'none';
-                loadMoreBtn.style.display = 'none';
+                if (!galleryUnlocked) {
+                    // Initial Welcome Screen sequence
+                    welcomeScreen.style.display = 'flex';
+                    cheekyScreen.style.display = 'none';
+                    galleryContainer.style.display = 'none';
+                    
+                    // Display the reveal button but activate the slow 5-second fade in
+                    loadMoreBtn.style.display = 'block';
+                    loadMoreBtn.classList.add('first-reveal-fade');
+                } else {
+                    // Caught Cheating Screen (since they unlocked the gallery already)
+                    welcomeScreen.style.display = 'none';
+                    cheekyScreen.style.display = 'flex';
+                    galleryContainer.style.display = 'none';
+                    loadMoreBtn.style.display = 'none';
+                }
+            } else {
+                // TURN THE LIGHTS OFF (Return to Vault/Darkness)
+                lightsOn = false;
+                document.body.classList.remove('spotlight-active');
+                switchBtn.innerText = "Turn Light On 💡";
+
                 welcomeScreen.style.display = 'none';
-                cheekyScreen.style.display = 'flex';
+                cheekyScreen.style.display = 'none';
+
+                if (galleryUnlocked) {
+                    // Turn on the wandering flashlight and return to the active gallery
+                    document.body.classList.add('gallery-active');
+                    galleryContainer.style.display = 'grid';
+                    loadMoreBtn.style.display = 'block';
+                }
             }
         });
 
-
-        // --- GALLERY GENERATOR ---
-        function showRandomImages() {
+        // 2. Unveiling the Images (When they click the reveal button)
+        function unveilVault() {
             window.scrollTo({ top: 0, behavior: 'instant' });
 
-            // Ensure button text changes after first reveal
-            loadMoreBtn.innerText = "Unveil 6 More";
+            if (!galleryUnlocked) {
+                // First unlock sequence
+                galleryUnlocked = true;
+                lightsOn = false;
+                
+                // Cut the theater spotlight, activate the wandering flashlight
+                document.body.classList.remove('spotlight-active');
+                document.body.classList.add('gallery-active');
+                
+                // Hide welcome screen and show grid
+                welcomeScreen.style.display = 'none';
+                galleryContainer.style.display = 'grid';
+                
+                // Reset the button styles (remove the 5s delay anim) and change text
+                loadMoreBtn.classList.remove('first-reveal-fade');
+                loadMoreBtn.style.opacity = '1';
+                loadMoreBtn.innerText = "Unveil 6 More";
+                switchBtn.innerText = "Turn Light On 💡";
+            }
 
+            // Shuffle and show 6 random images
             galleryContainer.innerHTML = '';
-
             const shuffled = [...allImages].sort(() => 0.5 - Math.random());
             const selection = shuffled.slice(0, imagesToShow);
 
@@ -398,9 +430,7 @@
             });
         }
 
-        // Hide main button until they actually turn off the lights for the first time
-        loadMoreBtn.style.display = 'none';
-        loadMoreBtn.addEventListener('click', showRandomImages);
+        loadMoreBtn.addEventListener('click', unveilVault);
     </script>
 
 </body>
