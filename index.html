@@ -68,12 +68,13 @@
             height: 100vh;
             pointer-events: none; /* Allows gestures to pass through to container */
             z-index: 3;
-            /* Significantly larger and softer spotlight beam */
+            /* UPGRADED: Massive, dramatic sweeping spotlight beam for Page 1 */
             background: radial-gradient(
-                circle 180px at var(--spot-x, 50%) var(--spot-y, 50%), 
-                rgba(229, 193, 88, 0.22) 0%, 
-                rgba(8, 8, 8, 0.35) 50%, 
-                rgba(2, 2, 2, 1) 95%
+                circle 260px at var(--spot-x, 50%) var(--spot-y, 50%), 
+                rgba(229, 193, 88, 0.28) 0%, 
+                rgba(229, 193, 88, 0.08) 45%,
+                rgba(8, 8, 8, 0.4) 70%, 
+                rgba(2, 2, 2, 1) 100%
             );
             opacity: 0;
             transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
@@ -93,6 +94,7 @@
             height: 100vh;
             pointer-events: none;
             z-index: 5;
+            /* Kept tighter and intimate for searching through photos */
             background: radial-gradient(
                 circle 110px at var(--flash-x, 50%) var(--flash-y, 50%), 
                 rgba(229, 193, 88, 0.08) 0%, 
