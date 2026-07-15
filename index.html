@@ -68,7 +68,7 @@
             height: 100vh;
             pointer-events: none; /* Allows gestures to pass through to container */
             z-index: 3;
-            /* UPGRADED: Massive, dramatic sweeping spotlight beam for Page 1 */
+            /* Massive, dramatic sweeping spotlight beam for Page 1 */
             background: radial-gradient(
                 circle 260px at var(--spot-x, 50%) var(--spot-y, 50%), 
                 rgba(229, 193, 88, 0.28) 0%, 
@@ -94,10 +94,10 @@
             height: 100vh;
             pointer-events: none;
             z-index: 5;
-            /* Kept tighter and intimate for searching through photos */
+            /* Intimate beam size for searching through photos */
             background: radial-gradient(
-                circle 110px at var(--flash-x, 50%) var(--flash-y, 50%), 
-                rgba(229, 193, 88, 0.08) 0%, 
+                circle 115px at var(--flash-x, 50%) var(--flash-y, 50%), 
+                rgba(229, 193, 88, 0.12) 0%, 
                 rgba(8, 8, 8, 0.2) 50%, 
                 rgba(2, 2, 2, 0.98) 95%
             );
@@ -319,8 +319,12 @@
         
         let lightsOn = false; // Starts in pitch black
         let galleryUnlocked = false;
-        let isUserInteracting = false;
-        let interactionTimeout;
+        
+        // Interaction states for both systems
+        let isUserInteractingSpot = false;
+        let isUserInteractingFlash = false;
+        let spotTimeout;
+        let flashTimeout;
 
         // --- COORDINATES FOR LIGHT SYSTEMS ---
         let currentSpotX = window.innerWidth / 2;
@@ -335,7 +339,7 @@
 
         // --- SPOTLIGHT (PAGE 1) AUTOMATIC DRIFTING ---
         function getNewSpotlightTarget() {
-            if (!isUserInteracting) {
+            if (!isUserInteractingSpot) {
                 targetSpotX = Math.random() * (window.innerWidth - 120) + 60;
                 targetSpotY = Math.random() * (window.innerHeight - 160) + 80;
             }
@@ -344,8 +348,10 @@
 
         // --- FLASHLIGHT (PAGE 2) AUTOMATIC DRIFTING ---
         function getNewFlashlightTarget() {
-            targetFlashX = Math.random() * (window.innerWidth - 160) + 80;
-            targetFlashY = Math.random() * (window.innerHeight - 200) + 100;
+            if (!isUserInteractingFlash) {
+                targetFlashX = Math.random() * (window.innerWidth - 160) + 80;
+                targetFlashY = Math.random() * (window.innerHeight - 200) + 100;
+            }
             setTimeout(getNewFlashlightTarget, Math.random() * 1500 + 1500);
         }
 
@@ -358,8 +364,8 @@
             spotlight.style.setProperty('--spot-y', `${currentSpotY}px`);
 
             // Smoothly glide the Wandering Flashlight (Page 2)
-            currentFlashX += (targetFlashX - currentFlashX) * 0.03;
-            currentFlashY += (targetFlashY - currentFlashY) * 0.03;
+            currentFlashX += (targetFlashX - currentFlashX) * 0.035;
+            currentFlashY += (targetFlashY - currentFlashY) * 0.035;
             flashlight.style.setProperty('--flash-x', `${currentFlashX}px`);
             flashlight.style.setProperty('--flash-y', `${currentFlashY}px`);
 
@@ -372,28 +378,38 @@
         animateLights();
 
 
-        // --- DRAG / SWIPE INTERACTION (ONLY ON PAGE 1) ---
+        // --- DRAG / SWIPE INTERACTION (HANDLES BOTH SCREENS) ---
         function handlePointerMove(e) {
-            if (!lightsOn || galleryUnlocked) return; // Only active when theater spotlight is on
-            
-            isUserInteracting = true;
-            clearTimeout(interactionTimeout);
-
-            // Fetch coordinates regardless of touch vs mouse input
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            // Instantly snap the target to where they touch
-            targetSpotX = clientX;
-            targetSpotY = clientY;
+            if (lightsOn && !galleryUnlocked) {
+                // PAGE 1: Manual Stage Spotlight
+                isUserInteractingSpot = true;
+                clearTimeout(spotTimeout);
+                
+                targetSpotX = clientX;
+                targetSpotY = clientY;
 
-            // If they stop swiping, wait 2 seconds before resuming auto-drift
-            interactionTimeout = setTimeout(() => {
-                isUserInteracting = false;
-            }, 2000);
+                spotTimeout = setTimeout(() => {
+                    isUserInteractingSpot = false;
+                }, 2000);
+            } 
+            else if (!lightsOn && galleryUnlocked) {
+                // PAGE 2: Manual Flashlight Control
+                isUserInteractingFlash = true;
+                clearTimeout(flashTimeout);
+
+                targetFlashX = clientX;
+                targetFlashY = clientY;
+
+                flashTimeout = setTimeout(() => {
+                    isUserInteractingFlash = false;
+                }, 2000);
+            }
         }
 
-        // Add both touch and mouse listeners
+        // Apply input listeners to the entire interactive viewport
         interactionArea.addEventListener('touchmove', handlePointerMove, { passive: true });
         interactionArea.addEventListener('mousemove', handlePointerMove);
         interactionArea.addEventListener('touchstart', handlePointerMove, { passive: true });
