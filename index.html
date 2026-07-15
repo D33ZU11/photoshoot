@@ -2,34 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Private Collection</title>
-    <!-- Elegant, high-fashion editorial fonts -->
+    <!-- Elegant editorial fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&family=Montserrat:wght@200;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;1,300&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
     
     <style>
-        /* Sleek, dark studio gallery atmosphere */
-        body {
-            font-family: 'Montserrat', sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 20px;
-            text-align: center;
+        /* Force the app to fit exactly on a single mobile screen with zero scrolling */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevents all scrolling */
             background: #080808;
             color: #f5f5f7;
-            overflow-x: hidden;
+            font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box;
         }
 
-        /* Minimal, elegant luxury header */
+        /* Main container structured as a flexbox to dynamically scale layout elements */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            padding: 20px 15px;
+            box-sizing: border-box;
+        }
+
+        /* Compact, elegant header */
+        header {
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
         h1 {
             font-family: 'Cormorant Garamond', Georgia, serif;
             color: #e5c158; /* Soft Champagne Gold */
-            font-size: 3.5rem;
+            font-size: 2rem;
             font-weight: 300;
-            margin-bottom: 5px;
-            letter-spacing: 6px;
+            margin: 0 0 4px 0;
+            letter-spacing: 4px;
             text-transform: uppercase;
         }
 
@@ -37,114 +54,98 @@
             font-family: 'Cormorant Garamond', Georgia, serif;
             font-style: italic;
             color: #a69f88;
-            font-size: 1.4rem;
-            margin-bottom: 60px;
-            letter-spacing: 2px;
+            font-size: 1.05rem;
+            margin: 0;
+            letter-spacing: 1px;
         }
 
-        /* Clean, sharp grid for 8 landscape/portrait balanced frames */
+        /* Perfectly sized grid that auto-fits 6 images into the remaining screen height */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 24px;
-            margin-bottom: 60px;
-            justify-content: center;
+            grid-template-columns: repeat(2, 1fr); /* Clean 2-column layout for phones */
+            grid-template-rows: repeat(3, 1fr);    /* Clean 3-row layout */
+            gap: 12px;
+            width: 100%;
+            max-width: 450px;
+            flex-grow: 1; /* Instructs the grid to stretch to fill the vertical space */
+            margin: 10px 0;
         }
 
-        /* Fine-art luxury framing */
+        /* Clean, sharp photo frames */
         .gallery-item-wrapper {
             position: relative;
             overflow: hidden;
-            border-radius: 4px; /* Sleeker, sharper corners for an editorial look */
+            border-radius: 4px;
             background-color: #121212;
-            aspect-ratio: 3 / 4; /* Classic portrait photo-frame ratio */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(229, 193, 88, 0.15); /* Delicate gold border */
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
-                        box-shadow 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                        border-color 0.6s ease;
-            cursor: pointer;
-        }
-
-        /* Elegant lift and glow on hover */
-        .gallery-item-wrapper:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(229, 193, 88, 0.1);
-            border-color: rgba(229, 193, 88, 0.6);
+            border: 1px solid rgba(229, 193, 88, 0.15);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+            height: 100%;
+            width: 100%;
         }
 
         .gallery-item {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.9) contrast(1.05); /* Gives a premium, dramatic contrast */
-            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), 
-                        filter 0.6s ease;
+            filter: brightness(0.9) contrast(1.05);
             display: block;
+            transition: transform 0.4s ease;
         }
 
-        /* Slow, cinematic reveal on hover */
-        .gallery-item-wrapper:hover .gallery-item {
-            transform: scale(1.06);
-            filter: brightness(1.05) contrast(1.05); /* Gently lights up the photo when she looks closer */
-        }
-
-        /* Sleek, understated luxury button */
+        /* Seductive, low-profile button at the very bottom */
         .load-btn {
             background: transparent;
             color: #e5c158;
             border: 1px solid rgba(229, 193, 88, 0.4);
-            padding: 16px 45px;
+            padding: 12px 0;
+            width: 100%;
+            max-width: 280px;
             font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 20px;
-            font-weight: 300;
-            letter-spacing: 4px;
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            border-radius: 2px; /* Sharp, modern edge */
+            border-radius: 2px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        /* Clean, dramatic inverted hover effect */
-        .load-btn:hover {
-            background-color: #e5c158;
-            color: #080808;
-            border-color: #e5c158;
-            box-shadow: 0 10px 25px rgba(229, 193, 88, 0.2);
-            transform: translateY(-2px);
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent; /* Removes blue tap flash on iPhones */
         }
 
         .load-btn:active {
-            transform: translateY(1px);
+            background-color: #e5c158;
+            color: #080808;
+            border-color: #e5c158;
+            transform: scale(0.98);
         }
 
-        /* Elegant cascade fade-in */
-        @keyframes editorialFade {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Quick, elegant fade-in for changing images */
+        @keyframes quickFade {
+            from { opacity: 0; transform: scale(0.97); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .fade-in {
-            animation: editorialFade 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation: quickFade 0.5s ease-out forwards;
         }
     </style>
 </head>
 <body>
 
-    <h1>The Private Collection</h1>
-    <p class="subtitle">Strictly Confidential • For Your Eyes Only</p>
+    <div class="app-container">
+        
+        <header>
+            <h1>The Velvet Vault</h1>
+            <p class="subtitle">Dare to look a little closer...</p>
+        </header>
 
-    <!-- The container where JavaScript will inject the images -->
-    <div id="gallery" class="gallery-grid"></div>
+        <!-- The container that holds exactly 6 scaled images -->
+        <div id="gallery" class="gallery-grid"></div>
 
-    <!-- The minimalist, high-end button -->
-    <button id="loadMoreBtn" class="load-btn">Reveal Next Set</button>
+        <!-- The control button -->
+        <button id="loadMoreBtn" class="load-btn">Unveil Secrets</button>
+
+    </div>
 
     <script>
         const allImages = [
@@ -156,22 +157,24 @@
             "images/image26.jpg", "images/image27.jpg", "images/image28.jpg", "images/image29.jpg", "images/image30.jpg"
         ];
 
-        const imagesToShow = 8;
+        const imagesToShow = 6; // Set to exactly 6
         const galleryContainer = document.getElementById('gallery');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-        // Function to select and display 8 completely random images
+        // Function to select and display 6 completely random images
         function showRandomImages() {
+            // Instantly send view back to the absolute top of the viewport
+            window.scrollTo({ top: 0, behavior: 'instant' });
+
             galleryContainer.innerHTML = '';
 
+            // Clone and shuffle
             const shuffled = [...allImages].sort(() => 0.5 - Math.random());
             const selection = shuffled.slice(0, imagesToShow);
 
-            selection.forEach((src, index) => {
+            selection.forEach((src) => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'gallery-item-wrapper fade-in';
-                // Beautiful cascading delay effect
-                wrapper.style.animationDelay = `${index * 0.08}s`;
 
                 const img = document.createElement('img');
                 img.src = src;
