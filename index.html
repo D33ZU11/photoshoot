@@ -3,122 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Midnight Muse</title>
+    <title>The Velvet Vault</title>
+    <!-- Importing elegant serif fonts for a high-end editorial feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    
     <style>
-        /* Deep, velvety dark background */
+        /* Ambient deep luxury background with a warm crimson/gold vignette */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             max-width: 1200px;
             margin: 0 auto;
             padding: 60px 20px;
             text-align: center;
-            background: radial-gradient(circle at center, #151515 0%, #0a0a0a 100%);
-            color: #e0e0e0;
+            background: radial-gradient(circle at 50% 30%, #1c0d12 0%, #080506 70%, #030202 100%);
+            color: #f0f0f0;
             overflow-x: hidden;
         }
 
-        /* Elegant, premium gold title */
+        /* Sophisticated, dramatic header */
         h1 {
-            font-family: 'Playfair Display', Georgia, "Times New Roman", serif;
-            color: #d4af37; /* Rich Gold */
-            font-size: 3rem;
+            font-family: 'Playfair Display', Georgia, serif;
+            color: #d4af37; /* Rich Metallic Gold */
+            font-size: 3.2rem;
             font-weight: 400;
-            margin-bottom: 5px;
-            letter-spacing: 3px;
+            margin-bottom: 8px;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
         }
 
-        /* Playful, provocative subtitle */
+        /* Alluring, teasing subtitle */
         p.subtitle {
             font-family: 'Playfair Display', Georgia, serif;
             font-style: italic;
-            color: #a89060;
-            font-size: 1.25rem;
-            margin-bottom: 50px;
-            letter-spacing: 1px;
+            color: #bfa370;
+            font-size: 1.3rem;
+            margin-bottom: 60px;
+            letter-spacing: 1.5px;
+            opacity: 0.9;
         }
 
-        /* Responsive grid layout */
+        /* Grid layout */
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
             margin-bottom: 60px;
             justify-content: center;
         }
 
-        /* Smooth, premium image container */
+        /* Interactive, premium card wrapper */
         .gallery-item-wrapper {
+            position: relative;
             overflow: hidden;
-            border-radius: 8px;
-            background-color: #111;
-            aspect-ratio: 4 / 3;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(212, 175, 55, 0.1); /* Subtle gold border */
-            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
-                        box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
-                        border-color 0.4s ease;
+            border-radius: 12px;
+            background-color: #0f0a0c;
+            aspect-ratio: 4 / 5; /* Elegant portrait-slanted ratio */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 1px rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        box-shadow 0.5s cubic-bezier(0.165, 0.84, 0.44, 1),
+                        border-color 0.5s ease;
             cursor: pointer;
         }
 
-        /* Lift and glowing border on hover */
+        /* Card hover effects: glowing gold frame and subtle lift */
         .gallery-item-wrapper:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
-            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.15), 0 0 30px rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.5);
         }
 
         .gallery-item {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: block;
         }
 
-        /* Slow cinematic zoom on hover */
+        /* Slow cinematic zoom-in on hover */
         .gallery-item-wrapper:hover .gallery-item {
-            transform: scale(1.08);
+            transform: scale(1.1);
         }
 
-        /* Seductive, glowing interactive button */
+        /* Dark, seductive overlay that reveals text on hover */
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top, rgba(10, 5, 6, 0.95) 0%, rgba(10, 5, 6, 0) 100%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .gallery-item-wrapper:hover .card-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .overlay-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            color: #d4af37;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* The Breathing/Pulsing Button */
         .load-btn {
             background: transparent;
             color: #d4af37;
             border: 2px solid #d4af37;
-            padding: 16px 38px;
+            padding: 18px 45px;
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 600;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            border-radius: 4px;
+            border-radius: 50px; /* Fully rounded pill shape */
             cursor: pointer;
             position: relative;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+            outline: none;
+            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            animation: buttonPulse 3s infinite ease-in-out;
         }
 
-        /* Sleek hover state: button fills with gold, glows, and text turns dark */
+        /* Seductive glowing pulse animation */
+        @keyframes buttonPulse {
+            0% {
+                box-shadow: 0 0 10px rgba(212, 175, 55, 0.1), inset 0 0 0px rgba(212, 175, 55, 0);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(212, 175, 55, 0.45), inset 0 0 5px rgba(212, 175, 55, 0.2);
+                border-color: rgba(212, 175, 55, 1);
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(212, 175, 55, 0.1), inset 0 0 0px rgba(212, 175, 55, 0);
+            }
+        }
+
+        /* Stop pulsing and go fully golden on hover */
         .load-btn:hover {
+            animation: none;
             background-color: #d4af37;
-            color: #0a0a0a;
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
-            transform: translateY(-2px);
+            color: #0a0506;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+            transform: translateY(-3px) scale(1.03);
         }
 
         .load-btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+            transform: translateY(1px) scale(0.98);
         }
 
-        /* Elegant fade-in for images */
-        @keyframes fadeIn {
+        /* Luxurious, slightly slower fade-in for images */
+        @keyframes customFade {
             from {
                 opacity: 0;
-                transform: translateY(15px);
+                transform: translateY(25px);
             }
             to {
                 opacity: 1;
@@ -127,19 +179,19 @@
         }
 
         .fade-in {
-            animation: fadeIn 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            animation: customFade 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
         }
     </style>
 </head>
 <body>
 
     <h1>The Velvet Vault</h1>
-    <p class="subtitle">A private showcase of shadow & secrets. Strictly for your eyes only.</p>
+    <p class="subtitle">A private, randomized showcase. Strictly for your eyes only.</p>
 
     <!-- The container where JavaScript will inject the images -->
     <div id="gallery" class="gallery-grid"></div>
 
-    <!-- The trigger button -->
+    <!-- The breathing, glowing button -->
     <button id="loadMoreBtn" class="load-btn">Unveil More Secrets</button>
 
     <script>
@@ -156,41 +208,54 @@
         const galleryContainer = document.getElementById('gallery');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
 
+        // Randomly select phrases to display on hover
+        const sensualPhrases = [
+            "Uncover", "Confidential", "Just For You", "Locked", "Private Collection", "Adore", "Secrets"
+        ];
+
+        function getRandomPhrase() {
+            return sensualPhrases[Math.floor(Math.random() * sensualPhrases.length)];
+        }
+
         // Function to select and display 8 completely random images
         function showRandomImages() {
-            // Clear out the previous images from the screen
             galleryContainer.innerHTML = '';
 
-            // Clone and shuffle the entire image array
             const shuffled = [...allImages].sort(() => 0.5 - Math.random());
-
-            // Take the first 8 images from the shuffled deck
             const selection = shuffled.slice(0, imagesToShow);
 
-            // Create and show them on the screen
-            selection.forEach(src => {
+            selection.forEach((src, index) => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'gallery-item-wrapper fade-in';
+                // Slight delay trick so they cascade onto the screen beautifully
+                wrapper.style.animationDelay = `${index * 0.1}s`;
 
                 const img = document.createElement('img');
                 img.src = src;
                 img.alt = "Private Gallery Image";
                 img.className = "gallery-item";
                 
-                // If an image doesn't exist, hide the broken container automatically
+                // Seductive overlay text
+                const overlay = document.createElement('div');
+                overlay.className = 'card-overlay';
+                
+                const text = document.createElement('span');
+                text.className = 'overlay-text';
+                text.innerText = getRandomPhrase();
+                
+                overlay.appendChild(text);
+                wrapper.appendChild(img);
+                wrapper.appendChild(overlay);
+                
                 img.onerror = function() {
                     wrapper.style.display = 'none';
                 };
                 
-                wrapper.appendChild(img);
                 galleryContainer.appendChild(wrapper);
             });
         }
 
-        // When they click the button, grab a brand new set of random images
         loadMoreBtn.addEventListener('click', showRandomImages);
-
-        // Load the first random batch immediately when the page finishes loading
         showRandomImages();
     </script>
 
